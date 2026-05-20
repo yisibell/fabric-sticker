@@ -26,8 +26,6 @@ jobs:
 
       # build to static
       - name: Build Example
-        env:
-          PNPM_MINIMUM_RELEASE_AGE: '0'
         run: pnpm install && pnpm build-only
         # working-directory: example
 

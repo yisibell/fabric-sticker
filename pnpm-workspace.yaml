@@ -1,0 +1,5 @@
+minimumReleaseAge: 1440
+minimumReleaseAgeExclude:
+  - '@vue/language-core'
+  - 'postcss'
+  - 'vue-tsc'
