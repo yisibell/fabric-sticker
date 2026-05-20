@@ -1,36 +1,48 @@
 name: Deploy
 
+# Build and publish GitHub Pages when main or release branches receive a push.
 on:
   push:
     branches:
       - main
       - release/*
 
+# Official Pages deployment needs write access to Pages and OIDC.
+# Repository contents are only read during checkout/build.
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
+
+# Keep Pages deployments serialized so concurrent pushes do not overwrite each other.
+concurrency:
+  group: pages
+  cancel-in-progress: false
 
 jobs:
   deploy:
+    # Official GitHub Pages actions run on GitHub-hosted runners.
     runs-on: ubuntu-latest
 
     steps:
-      # Set a Node.js version
-      - name: Use Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 24
-
-      # pull code
+      # Check out the repository source.
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
 
-      # using pnpm to install deps
+      # Pin pnpm so install policies and behavior do not drift between CI runs.
       - name: Use pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
         with:
           version: 10.24.0
 
-      # build to static
+      # Use Node 24 and enable pnpm store caching.
+      - name: Use Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: pnpm
+
+      # Install dependencies and build the static site into dist.
       - name: Build Example
         run: |
           pnpm --version
@@ -39,11 +51,17 @@ jobs:
           pnpm build-only
         # working-directory: example
 
-      # deploy to `docs` branch
-      - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@v4
+      # Prepare this workflow for GitHub Pages deployment.
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      # Package dist as the Pages artifact.
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v4
         with:
-          folder: dist
-          clean: true
-          branch: gh-pages
-          single-commit: true
+          path: dist
+
+      # Deploy the Pages artifact. Repository Pages source must be "GitHub Actions".
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
