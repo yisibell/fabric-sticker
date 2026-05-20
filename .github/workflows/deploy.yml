@@ -6,6 +6,9 @@ on:
       - main
       - release/*
 
+permissions:
+  contents: write
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -38,10 +41,9 @@ jobs:
 
       # deploy to `docs` branch
       - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@v4.4.1
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: dist
-          silent: true
           clean: true
           branch: gh-pages
           single-commit: true
