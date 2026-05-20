@@ -1,5 +1,7 @@
 # fabric-sticker
 
+a sticker demo via `fabric`.
+
 ## Project Setup
 
 ```sh
