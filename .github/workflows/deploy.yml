@@ -26,7 +26,12 @@ jobs:
 
       # build to static
       - name: Build Example
-        run: pnpm install --no-verify-store-integrity && pnpm build-only
+        env:
+          PNPM_MINIMUM_RELEASE_AGE: '0'
+        run: |
+          pnpm clean --lockfile || true
+          pnpm install
+          pnpm build-only
         # working-directory: example
 
       # deploy to `docs` branch
