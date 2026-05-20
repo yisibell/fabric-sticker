@@ -26,7 +26,7 @@ jobs:
 
       # build to static
       - name: Build Example
-        run: pnpm install && pnpm build-only
+        run: pnpm install --no-verify-store-integrity && pnpm build-only
         # working-directory: example
 
       # deploy to `docs` branch
