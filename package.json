@@ -28,5 +28,10 @@
   },
   "engines": {
     "node": ">=22"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "canvas"
+    ]
   }
 }
